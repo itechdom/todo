@@ -1,0 +1,3 @@
+rootProject.name = 'screenshotOrganizer'
+
+include ':app'
