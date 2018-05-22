@@ -27,8 +27,7 @@ app.use(function(req, res, next) {
 // =================================================================
 // Import web services ========================================
 // =================================================================
-var User   = require('./branchit-service/models/user'); // get our mongoose model
-var Idea  = require('./branchit-service/models/idea'); // get our mongoose model
+var Todo  = require('./todo-service/models/todo'); // get our mongoose model
 
 import passportService from './passport-service/passport-service.js'
 const passportApi = passportService({app,config,User});
@@ -36,8 +35,8 @@ const passportApi = passportService({app,config,User});
 import googleService from './google-service/google-service.js'
 const googleApi = googleService({app,config,User});
 
-import branchitService from './branchit-service/branchit-service.js';
-const branchitApi = branchitService({app,Idea});
+import todoService from './todo-service/todo-service.js';
+const todoApi = todoService({app,config,Todo});
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -52,6 +51,7 @@ app.use(morgan('dev'));
 app.use('/static', express.static('dist'))
 app.use('/',passportApi);
 app.use('/google',googleApi);
+app.use('/',todoApi);
 //app.use('/api/v1',branchitApi);
 
 // =================================================================
