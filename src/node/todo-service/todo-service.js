@@ -1,15 +1,12 @@
 // basic route (http://localhost:8080)
 const express = require('express');
 var busboy = require('connect-busboy');
-var csv = require('csv-parser')
-import parser from './data-parser/data-parser.js';
-import csvConverter from './csv-converter/csv-converter.js';
 
 var apiRoutes = express.Router();
 
 export default function({
   app,
-  Expense
+  Todo
 }) {
 
   //busboy is for uploading multipart forms (csv files here)
@@ -19,8 +16,8 @@ export default function({
     res.send('Hello! this is budgetqt backend!');
   });
 
-  apiRoutes.get('/expenses', function(req, res) {
-    Expense.find({}).sort('-date').exec((err, data) => {
+  apiRoutes.get('/todos', function(req, res) {
+    Todo.find({}).sort('-date').exec((err, data) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
@@ -29,9 +26,9 @@ export default function({
     });
   });
 
-  apiRoutes.post('/expenses', function(req, res) {
-    let newExpense = new Expense(req.body);
-    Expense.save(newExpense, (err, data) => {
+  apiRoutes.post('/todos', function(req, res) {
+    let newTodo = new Todo(req.body);
+    Todo.save(newTodo, (err, data) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
@@ -40,21 +37,21 @@ export default function({
     });
   });
 
-  apiRoutes.put('/expenses', (req, res) => {
-    //take the imported expense, format it and add it to the expenses collection
-    let expense = req.body;
-    let newExpense = {title:expense.title,amount:expense.amount,date:expense.date,tags:expense.tags}
-    Expense.findOneAndUpdate({_id:expense._id}, newExpense, {
+  apiRoutes.put('/todos', (req, res) => {
+    //take the imported todo, format it and add it to the todos collection
+    let todo = req.body;
+    let newTodo = {title:todo.title,amount:todo.amount,date:todo.date,tags:todo.tags}
+    Todo.findOneAndUpdate({_id:todo._id}, newTodo, {
       upsert: false
     }, function(err, doc) {
       if (err) return res.send(500, {error: err});
-      res.send(newExpense);
+      res.send(newTodo);
     });
   });
 
-  apiRoutes.post('/expenses', function(req, res) {
-    let newExpense = new Expense(req.body);
-    Expense.save(newExpense, (err, data) => {
+  apiRoutes.post('/todos', function(req, res) {
+    let newTodo = new Todo(req.body);
+    Todo.save(newTodo, (err, data) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
@@ -63,11 +60,11 @@ export default function({
     });
   });
 
-  apiRoutes.delete('/expenses', (req, res) => {
-    let expense = req.body;
-    //remove the imported expense
-    Expense.find({
-      _id: expense["_id"]
+  apiRoutes.delete('/todos', (req, res) => {
+    let todo = req.body;
+    //remove the imported todo
+    Todo.find({
+      _id: todo["_id"]
     }).remove().exec((err) => {
       if (err) {
         return res.status(500).send(err);
@@ -76,34 +73,34 @@ export default function({
     });
   });
 
-  apiRoutes.get('/expenses/export/csv', (req, res) => {
-    Expense.find({}, (err, data) => {
+  apiRoutes.get('/todos/export/csv', (req, res) => {
+    Todo.find({}, (err, data) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
       }
-      res.setHeader('Content-disposition', 'attachment; filename=expenses.csv');
+      res.setHeader('Content-disposition', 'attachment; filename=todos.csv');
       res.set('Content-Type', 'text/csv');
       let csvFile = csvConverter(data);
       res.status(200).send(csvFile);
     });
   });
 
-  apiRoutes.post('/expenses/upload/csv', function(req, res) {
+  apiRoutes.post('/todos/upload/csv', function(req, res) {
     if (req.busboy) {
       req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
         file.pipe(csv()).on('data', (entry) => {
 
-          var expense = parser({
+          var todo = parser({
             entry
           });
 
-          expense.title = filename;
+          todo.title = filename;
 
-          if(!hasPaymentTags(expense.tags)){
-            return Expense.update(
-              {date:expense.date,amount:expense.amount,tags:{$in: expense.tags}},
-              {$setOnInsert: expense},
+          if(!hasPaymentTags(todo.tags)){
+            return Todo.update(
+              {date:todo.date,amount:todo.amount,tags:{$in: todo.tags}},
+              {$setOnInsert: todo},
               {upsert: true},
               function(err, numAffected) {
                 if(err){
@@ -121,11 +118,4 @@ export default function({
   });
 
   return apiRoutes;
-}
-
-function hasPaymentTags(tagList){
-  let paymentTags = tagList.map((tag)=>{
-    return tag.toLowerCase().indexOf('payment') !== -1;
-  }).filter(tag => tag);
-  return paymentTags.length > 0;
 }
