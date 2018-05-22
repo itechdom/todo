@@ -3,6 +3,7 @@ import ViewStore from './stores/ViewStore';
 import TodoApp from './components/todoApp.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
+require('todomvc-app-css/index.css');
 
 const initialState = window.initialState && JSON.parse(window.initialState) || {};
 

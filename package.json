@@ -79,6 +79,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "superagent": "^3.5.1",
+    "todomvc-app-css": "^2.1.2",
     "uuid": "^3.0.1"
   },
   "devDependencies": {

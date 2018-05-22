@@ -28,6 +28,8 @@ app.use(function(req, res, next) {
 // Import web services ========================================
 // =================================================================
 var Todo  = require('./todo-service/models/todo'); // get our mongoose model
+var User  = require('./todo-service/models/user'); // get our mongoose model
+var Reward  = require('./todo-service/models/reward'); // get our mongoose model
 
 import passportService from './passport-service/passport-service.js'
 const passportApi = passportService({app,config,User});
