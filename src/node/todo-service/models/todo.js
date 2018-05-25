@@ -7,5 +7,6 @@ module.exports = mongoose.model('Todo', new Schema({
 	points: Number,
 	date: Date,
 	category: String,
-	tags:[String]
-}));
+	completed: Boolean,
+	tags: [String]
+}, { timestamps: true }));

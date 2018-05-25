@@ -2,13 +2,13 @@ import {observable} from 'mobx';
 
 export default class TodoModel {
 	store;
-	id;
+	_id;
 	@observable title;
 	@observable completed;
 
 	constructor(store, id, title, completed) {
 		this.store = store;
-		this.id = id;
+		this._id = id;
 		this.title = title;
 		this.completed = completed;
 	}
@@ -27,7 +27,7 @@ export default class TodoModel {
 
 	toJS() {
 		return {
-			id: this.id,
+			id: this._id,
 			title: this.title,
 			completed: this.completed
 		};

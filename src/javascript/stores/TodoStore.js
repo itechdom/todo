@@ -1,4 +1,4 @@
-import {observable, computed, reaction} from 'mobx';
+import { observable, computed, reaction } from 'mobx';
 import TodoModel from '../models/TodoModel'
 import * as Utils from '../utils';
 import { SERVER_URL } from '../constants';
@@ -16,6 +16,23 @@ export default class TodoStore {
 
 	@computed get completedCount() {
 		return this.todos.length - this.activeTodoCount;
+	}
+
+	fetchTodos() {
+		return fetch(`${SERVER_URL}/api/todos`, {
+			method: 'get',
+			headers: new Headers({ 'Content-Type': 'application/json' })
+		}).then((response) => {
+			let todosPromise = response.json();
+			todosPromise.then((todos) => {
+				todos.map(todo => {
+					let newTodo = new TodoModel(this,todo._id,todo.title,todo.completed)
+					this.todos.push(newTodo);
+				})
+			})
+		}).catch(error => {
+			console.log(error);
+		})
 	}
 
 	subscribeServerToStore() {
@@ -36,17 +53,17 @@ export default class TodoStore {
 		);
 	}
 
-	addTodo (title) {
+	addTodo(title) {
 		this.todos.push(new TodoModel(this, Utils.uuid(), title, false));
 	}
 
-	toggleAll (checked) {
+	toggleAll(checked) {
 		this.todos.forEach(
 			todo => todo.completed = checked
 		);
 	}
 
-	clearCompleted () {
+	clearCompleted() {
 		this.todos = this.todos.filter(
 			todo => !todo.completed
 		);
