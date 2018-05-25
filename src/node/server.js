@@ -53,7 +53,7 @@ app.use(morgan('dev'));
 app.use('/static', express.static('dist'))
 app.use('/',passportApi);
 app.use('/google',googleApi);
-app.use('/',todoApi);
+app.use('/api',todoApi);
 //app.use('/api/v1',branchitApi);
 
 // =================================================================

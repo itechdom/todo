@@ -1,6 +1,7 @@
 import {observable, computed, reaction} from 'mobx';
 import TodoModel from '../models/TodoModel'
 import * as Utils from '../utils';
+import { SERVER_URL } from '../constants';
 
 
 export default class TodoStore {
@@ -20,7 +21,7 @@ export default class TodoStore {
 	subscribeServerToStore() {
 		reaction(
 			() => this.toJS(),
-			todos => window.fetch && fetch('/api/todos', {
+			todos => window.fetch && fetch(`${SERVER_URL}/api/todos`, {
 				method: 'post',
 				body: JSON.stringify({ todos }),
 				headers: new Headers({ 'Content-Type': 'application/json' })

@@ -28,7 +28,7 @@ export default function({
 
   apiRoutes.post('/todos', function(req, res) {
     let newTodo = new Todo(req.body);
-    Todo.save(newTodo, (err, data) => {
+    newTodo.save((err, data) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);

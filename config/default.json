@@ -10,7 +10,7 @@
     "db":{
         "host":"mongodb://localhost",
         "port":27017,
-        "name":"branchit"
+        "name":"todo"
     },
     "auth":{
         "google":{
