@@ -26,7 +26,7 @@ export default class TodoStore {
 			let todosPromise = response.json();
 			todosPromise.then((todos) => {
 				todos.map(todo => {
-					let newTodo = new TodoModel(this,todo._id,todo.title,todo.completed)
+					let newTodo = new TodoModel(this,todo.todo_id,todo.title,todo.completed)
 					this.todos.push(newTodo);
 				})
 			})

@@ -42,6 +42,7 @@
     "graphql": "^0.9.1",
     "immutable": "^3.8.2",
     "jsonwebtoken": "^7.2.1",
+    "lodash": "^4.17.10",
     "material-ui": "^0.20.0",
     "melonjs": "^4.1.1",
     "mobx": "^3.1.9",

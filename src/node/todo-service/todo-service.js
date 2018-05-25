@@ -28,7 +28,7 @@ export default function ({
 
   const findOrUpdateTodo = (todo) => {
     return new Promise((resolve, reject) => {
-      Todo.findOneAndUpdate({ title: todo.title}, todo, {
+      Todo.findOneAndUpdate({ title: todo.title }, todo, {
         upsert: true
       }, function (err, doc) {
         if (err) return reject(err);
@@ -36,9 +36,40 @@ export default function ({
       });
     })
   }
+  const findTodo = (todo) => {
+    return new Promise((resolve, reject) => {
+      Todo.findOne({ title: todo.title, todo_id: title.todo_id }, function (err, todo) {
+        if (err) return reject(err);
+        return resolve(todo);
+      });
+    })
+  }
+  const allTodos = () => {
+    return new Promise((resolve, reject) => {
+      Todo.find({}, (err, todos) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(todos);
+      })
+    })
+
+  }
   apiRoutes.post('/todos', function (req, res) {
     let todos = req.body.todos;
     let updateTodoPromises = todos.map(todo => findOrUpdateTodo(todo));
+    allTodos().then(allTodos => {
+      let leftOver = allTodos.filter(e => {
+        let found = todos.filter(todo => {
+          return todo.todo_id === e.todo_id
+        })[0];
+        return !found;
+      });
+      leftOver.map(todo=>{
+        todo.deleted = true;
+        findOrUpdateTodo(todo);
+      })
+    })
     Promise.all(updateTodoPromises).then((values) => {
       res.send(values)
     }).catch(err => {

@@ -2,13 +2,13 @@ import {observable} from 'mobx';
 
 export default class TodoModel {
 	store;
-	_id;
+	todo_id;
 	@observable title;
 	@observable completed;
 
-	constructor(store, id, title, completed) {
+	constructor(store, todo_id, title, completed) {
 		this.store = store;
-		this._id = id;
+		this.todo_id = todo_id;
 		this.title = title;
 		this.completed = completed;
 	}
@@ -27,13 +27,13 @@ export default class TodoModel {
 
 	toJS() {
 		return {
-			id: this._id,
+			todo_id: this.todo_id,
 			title: this.title,
 			completed: this.completed
 		};
 	}
 
 	static fromJS(store, object) {
-		return new TodoModel(store, object.id, object.title, object.completed);
+		return new TodoModel(store, object.todo_id, object.title, object.completed);
 	}
 }
