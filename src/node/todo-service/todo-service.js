@@ -20,7 +20,8 @@ export default function({ app, Todo }) {
           console.log(err);
           return res.status(500).send(err);
         }
-        res.send(data);
+        res.send(data.filter(d => !d.deleted));
+        // res.send(data);
       });
   });
   const findOneOrCreate = (condition, doc, callback) => {
@@ -41,7 +42,7 @@ export default function({ app, Todo }) {
     };
     return new Promise((resolve, reject) => {
       Todo.findOneAndUpdate(
-        { title: todo.title },
+        { todo_id: todo.todo_id },
         newTodo,
         {
           upsert: true
